@@ -7,6 +7,8 @@ import com.Bachs.repository.CategoryRepo;
 import com.Bachs.repository.NewsRepo;
 import com.Bachs.service.INewsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -42,6 +44,17 @@ public class NewsService implements INewsService {
         List<NewsDTO> newsDTOList = new ArrayList<NewsDTO>();
         List<NewsEntity> newsEntityList = newsRepo.findAll();
         for(NewsEntity  newsEntity: newsEntityList){
+            newsDTOList.add(NewsConverter.toNewsDTO(newsEntity));
+        }
+        return newsDTOList;
+    }
+
+    @Override
+    public List<NewsDTO> findAll(Pageable pageable) {
+        Page<NewsEntity> pagedResult =  newsRepo.findAll(pageable);
+        List<NewsEntity> list = pagedResult.getContent();
+        List<NewsDTO> newsDTOList = new ArrayList<NewsDTO>();
+        for(NewsEntity newsEntity: list){
             newsDTOList.add(NewsConverter.toNewsDTO(newsEntity));
         }
         return newsDTOList;
